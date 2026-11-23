@@ -2,6 +2,7 @@ import random
 
 from pico2d import load_image, draw_rectangle, clamp
 
+from LEC17_Collision.ball import GROUND_Y
 import game_framework
 import game_world
 
@@ -34,6 +35,7 @@ class Zombie:
         self.x, self.y = random.randint(MIN_X, MAX_X), 150
         self.frame = random.randint(0, 9)
         self.dir = random.choice([-1, 1])
+    
 
     def update(self):
         dt = game_framework.frame_time
@@ -44,6 +46,7 @@ class Zombie:
         elif self.x < MIN_X:
             self.dir = 1
         self.x = clamp(MIN_X, self.x, MAX_X)
+        
 
     def draw(self):
         image = Zombie.images['Walk'][int(self.frame)]
@@ -55,3 +58,7 @@ class Zombie:
 
     def get_bb(self):
         return self.x - 100, self.y - 100, self.x + 100, self.y + 100
+
+    def handle_collision(self, group, other):
+        if group == "boy:zombie":
+            game_world.remove_object(self)
